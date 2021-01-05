@@ -1,4 +1,4 @@
-#Author-Frances O'Leary
+#Author-Frances O'Leary January 2021
 #Description-Fusion script with a GUI to generate 3 bodies: cycloidal disk, base plate, and cam based on input parameters.
 
 import adsk.core, adsk.fusion, traceback, math
@@ -61,10 +61,9 @@ class MyCommandCreatedHandler(adsk.core.CommandCreatedEventHandler):
             inputs = cmd.commandInputs
             global pinDiameter, pinNumber, camR, centerPinR, camTolerance, baseHeight, pinHeight, camHeight, diskHeight
 
+            # add inputs
             inputs.addImageCommandInput('image', '', "resources/diagram.png")
-
-            # Create a message that spans the entire width of the dialog by leaving out the "name" argument.
-            message = '<div align="center">View the documentation <a href="http:fusion360.autodesk.com">here.</a></div>'
+            message = '<div align="center">View the documentation <a href="https://github.com/olearyf/cycloidal-gears">here.</a></div>'
             inputs.addTextBoxCommandInput('fullWidth_textBox', '', message, 1, True)            
             pinDiameter = inputs.addValueInput('pinDiameter', 'Pin Diameter', 'cm', adsk.core.ValueInput.createByReal(0.5))
             pinNumber = inputs.addValueInput('pinNumber', 'Number of Pins', '', adsk.core.ValueInput.createByReal(10))
@@ -82,28 +81,18 @@ class MyCommandCreatedHandler(adsk.core.CommandCreatedEventHandler):
         except:
             _ui.messageBox('Failed:\n{}'.format(traceback.format_exc()))
 
-
 def run(context):
     try:
         global _app, _ui
         _app = adsk.core.Application.get()
         _ui = _app.userInterface
-        
-
-        # Get the existing command definition or create it if it doesn't already exist.
         cmdDef = _ui.commandDefinitions.itemById('cmdInputsCyclGear')
         if not cmdDef:
             cmdDef = _ui.commandDefinitions.addButtonDefinition('cmdInputsCyclGear', 'Cycloidal Gear', 'Creates a cycloidal gear based on input parameters.')
-
-        # Connect to the command created event.
         onCommandCreated = MyCommandCreatedHandler()
         cmdDef.commandCreated.add(onCommandCreated)
         _handlers.append(onCommandCreated)
-
-        # Execute the command definition.
         cmdDef.execute()
-
-        # Prevent this module from being terminated when the script returns, because we are waiting for event handlers to fire.
         adsk.autoTerminate(False)
     except:
         if _ui:
