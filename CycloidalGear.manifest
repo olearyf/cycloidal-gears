@@ -1,0 +1,10 @@
+{
+	"autodeskProduct":	"Fusion360",
+	"type":	"script",
+	"author":	"Frances O'Leary",
+	"description":	{
+		"":	"Fusion script with a GUI to generate 3 bodies: cycloidal disk, base plate, and cam based on input parameters."
+	},
+	"supportedOS":	"windows|mac",
+	"editEnabled":	true
+}
