@@ -1,6 +1,10 @@
 # Cycloidal Gear Generator for Fusion 360
-This is an [Autodesk Fusion 360](http://fusion360.autodesk.com/) add-in for generating cycloidal gears.  Given the input parameters, it will create 3 bodies in a new sketch: cycloidal disk, base plate, and cam.
+### _**Note that this project is a current work in progress, and that this is V1.**_
 
+This is an [Autodesk Fusion 360](http://fusion360.autodesk.com/) add-in for generating cycloidal gears.  Given the input parameters, it will create 3 bodies in a new sketch: cycloidal disk, base plate, and cam.
+Example Cycloidal Gear             |  Script Menu
+:-------------------------:|:-------------------------:
+![](https://github.com/olearyf/cycloidal-gears/blob/main/resources/diskExample.PNG)  |  ![](https://github.com/olearyf/cycloidal-gears/blob/main/resources/scriptExample.PNG)
 ## Installation
 
 This portion was copied from the wonderful [Voronoi Diagram Generator for Fusion 360](https://github.com/hanskellner/Fusion360Voronoi).
@@ -28,7 +32,7 @@ Installing the add-in in the Fusion 360 Addins folder allows it to automatically
 
 > As an alternative to the above installation location, you can just place the files in their own folder within a location of your choice.  For example, in your Documents or Home folder.  Doing this means the add-in will not automatically appear in the add-ins list.  You will need to manually add it using the "+" button at the top of the list.
 
-There is additional installation help on the Fusion 260 site:
+There is additional installation help on the Fusion 360 site:
 
 https://knowledge.autodesk.com/support/fusion-360/troubleshooting/caas/sfdcarticles/sfdcarticles/How-to-install-an-ADD-IN-and-Script-in-Fusion-360.html
 
