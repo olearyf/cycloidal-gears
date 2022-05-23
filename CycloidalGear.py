@@ -135,6 +135,7 @@ class CycloidalGearCommandExecuteHandler(adsk.core.CommandEventHandler):
 # generates the cycloidal disk, cam, and base plate with pins
 def drawCycloidalBodies(combineFeatures, app, xyPlane, sketches, extrudes, pinD, numPins, shaftR, centerpinR, tolerance, baseHeight, pinHeight, camHeight, diskHeight):
     # further calculations
+    numPins = numPins+1
     rotorR = pinD * numPins * 2 / 3
     eccentricity = pinD * 0.5
 
@@ -158,17 +159,17 @@ def drawCycloidalBodies(combineFeatures, app, xyPlane, sketches, extrudes, pinD,
     for i in range(361):
         currentRad = i * math.pi / 180.0
         # parametric equations to create a spline along the outer edge
-        px = (rotorR * math.cos(currentRad)) - (pinD * math.cos((currentRad) + math.atan(math.sin((1 - numPins) * (currentRad)) / ((rotorR / eccentricity * numPins) - math.cos((1 - numPins) * (currentRad)))))) - (eccentricity * math.cos(numPins * (currentRad)))
-        py = (-rotorR * math.sin((currentRad))) + (pinD * math.sin((currentRad) + math.atan(math.sin((1 - numPins) * (currentRad)) / ((rotorR / eccentricity * numPins) - math.cos((1 - numPins) * (currentRad)))))) + (eccentricity * math.sin(numPins * (currentRad)))
+        px = ((rotorR) * math.cos(currentRad)) + ((eccentricity) * math.cos((numPins) * (currentRad)))
+        py = ((rotorR)* math.sin(currentRad)) + ((eccentricity) * math.sin((numPins) * (currentRad)))
         points.add(adsk.core.Point3D.create(px, py, pz))
     spline = diskSketch.sketchCurves.sketchFittedSplines.add(points)
     curves = diskSketch.findConnectedCurves(diskSketch.sketchCurves.sketchFittedSplines.add(points))
     dirPoint = adsk.core.Point3D.create(0, 0, 0)
-    offsetCurves = diskSketch.offset(curves, dirPoint, pinD)
+    offsetCurves = diskSketch.offset(curves, dirPoint, eccentricity)
     shaftHole = diskCircles.addByCenterRadius(adsk.core.Point3D.create(0, 0, 0), shaftR)
 
     # extrude the disk
-    prof = diskSketch.profiles.item(2)
+    prof = diskSketch.profiles.item(1)
     distance = adsk.core.ValueInput.createByReal(diskHeight)
     diskExtrude = extrudes.addSimple(prof, distance, adsk.fusion.FeatureOperations.NewBodyFeatureOperation)        
     disk = diskExtrude.bodies.item(0)
@@ -193,12 +194,12 @@ def drawCycloidalBodies(combineFeatures, app, xyPlane, sketches, extrudes, pinD,
     base2 = baseExtrude2.bodies.item(0)
 
     # create the sketches for the outer pins
-    degreeInc = (360.0 / (numPins+1)) * (math.pi / 180.0)
+    degreeInc = (360.0 / (numPins)) * (math.pi / 180.0)
     x = 0
-    y = app.measureManager.measureMinimumDistance(curves.item(0), dirPoint).value + pinD*0.5
+    y= rotorR
     z = 0
     count = 2
-    for i in range(numPins+1):
+    for i in range(numPins):
         baseCircles.addByCenterRadius(adsk.core.Point3D.create(x, y, z), pinD * 0.5)
         newy = x*math.sin(degreeInc) + y*math.cos(degreeInc)
         newx = x *math.cos(degreeInc) - y*math.sin(degreeInc)
@@ -224,7 +225,7 @@ def drawCycloidalBodies(combineFeatures, app, xyPlane, sketches, extrudes, pinD,
     # create the sketch for the cam, allowing for tolerances
     shaftHole = camCircles.addByCenterRadius(adsk.core.Point3D.create(0, 0, 0), shaftR - (tolerance))
     # pinD*0.5
-    offsetPin = camCircles.addByCenterRadius(adsk.core.Point3D.create(0, pinD * 2 / 3, 0), centerpinR + tolerance) 
+    offsetPin = camCircles.addByCenterRadius(adsk.core.Point3D.create(0, -pinD*0.5, 0), centerpinR + tolerance) 
 
     # extrude the cam
     prof = camSketch.profiles.item(0)
